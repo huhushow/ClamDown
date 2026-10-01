@@ -1,5 +1,6 @@
 import AppKit
 import Observation
+import ServiceManagement
 
 @MainActor
 @Observable
@@ -24,6 +25,9 @@ final class ClamDownModel {
     private(set) var isCountdownActive = false
     private(set) var remainingSeconds = 0
     private(set) var errorMessage: LocalizedStringResource?
+    private(set) var launchAtLoginEnabled = false
+    private(set) var launchAtLoginRequiresApproval = false
+    private(set) var launchAtLoginErrorMessage: LocalizedStringResource?
 
     private let systemMonitor = SystemMonitor()
     private var panelController: CountdownPanelController?
@@ -43,6 +47,7 @@ final class ClamDownModel {
 
         let storedDuration = defaults.integer(forKey: DefaultsKey.countdownDuration)
         countdownDuration = storedDuration == 0 ? 10 : min(max(storedDuration, 5), 120)
+        refreshLaunchAtLoginStatus()
 
         if startsMonitoring {
             Task { @MainActor [weak self] in
@@ -60,6 +65,50 @@ final class ClamDownModel {
 
     func setCountdownDuration(_ duration: Int) {
         countdownDuration = min(max(duration, 5), 120)
+    }
+
+    func setLaunchAtLogin(_ enabled: Bool) {
+        let service = SMAppService.mainApp
+        launchAtLoginErrorMessage = nil
+
+        do {
+            if enabled {
+                try service.register()
+            } else {
+                try service.unregister()
+            }
+        } catch {
+            refreshLaunchAtLoginStatus()
+            if !launchAtLoginRequiresApproval {
+                launchAtLoginErrorMessage = enabled
+                    ? "Clam Down could not be added to Login Items."
+                    : "Clam Down could not be removed from Login Items."
+            }
+            return
+        }
+
+        refreshLaunchAtLoginStatus()
+    }
+
+    func refreshLaunchAtLoginStatus() {
+        switch SMAppService.mainApp.status {
+        case .enabled:
+            launchAtLoginEnabled = true
+            launchAtLoginRequiresApproval = false
+        case .requiresApproval:
+            launchAtLoginEnabled = true
+            launchAtLoginRequiresApproval = true
+        case .notRegistered, .notFound:
+            launchAtLoginEnabled = false
+            launchAtLoginRequiresApproval = false
+        @unknown default:
+            launchAtLoginEnabled = false
+            launchAtLoginRequiresApproval = false
+        }
+    }
+
+    func openLoginItemsSettings() {
+        SMAppService.openSystemSettingsLoginItems()
     }
 
     func cancelCountdown() {

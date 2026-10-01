@@ -8,3 +8,4 @@ xcuserdata/
 # Xcode build artifacts
 DerivedData/
 build/
+dist/

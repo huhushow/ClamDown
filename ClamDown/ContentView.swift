@@ -19,6 +19,26 @@ struct MenuBarContentView: View {
                 set: { model.isEnabled = $0 }
             ))
 
+            Toggle("Launch at Login", isOn: Binding(
+                get: { model.launchAtLoginEnabled },
+                set: { model.setLaunchAtLogin($0) }
+            ))
+
+            if model.launchAtLoginRequiresApproval {
+                HStack {
+                    Text("Approval is required in System Settings.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Spacer()
+
+                    Button("Open Login Items") {
+                        model.openLoginItemsSettings()
+                    }
+                    .buttonStyle(.link)
+                }
+            }
+
             Stepper(value: Binding(
                 get: { model.countdownDuration },
                 set: { model.setCountdownDuration($0) }
@@ -41,6 +61,12 @@ struct MenuBarContentView: View {
                     .foregroundStyle(.red)
             }
 
+            if let launchAtLoginErrorMessage = model.launchAtLoginErrorMessage {
+                Text(launchAtLoginErrorMessage)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+
             Divider()
 
             Button("Quit Clam Down") {
@@ -49,6 +75,9 @@ struct MenuBarContentView: View {
         }
         .padding(16)
         .frame(width: 300)
+        .onAppear {
+            model.refreshLaunchAtLoginStatus()
+        }
     }
 }
 
