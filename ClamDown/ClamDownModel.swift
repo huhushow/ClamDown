@@ -13,9 +13,8 @@ final class ClamDownModel {
         }
     }
 
-    var countdownDuration: Int {
+    private(set) var countdownDuration: Int {
         didSet {
-            countdownDuration = min(max(countdownDuration, 3), 60)
             UserDefaults.standard.set(countdownDuration, forKey: DefaultsKey.countdownDuration)
         }
     }
@@ -57,7 +56,14 @@ final class ClamDownModel {
     }
 
     func startTestCountdown() {
-        beginCountdown()
+        Task { @MainActor [weak self] in
+            await Task.yield()
+            self?.beginCountdown()
+        }
+    }
+
+    func setCountdownDuration(_ duration: Int) {
+        countdownDuration = min(max(duration, 3), 60)
     }
 
     func cancelCountdown() {
@@ -140,7 +146,9 @@ final class ClamDownModel {
 
     private func installKeyMonitor() {
         removeKeyMonitor()
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] _ in
+        keyMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: [.keyDown, .flagsChanged]
+        ) { [weak self] _ in
             self?.cancelCountdown()
             return nil
         }

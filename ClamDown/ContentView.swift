@@ -93,7 +93,7 @@ struct SettingsView: View {
 
             Stepper(value: Binding(
                 get: { model.countdownDuration },
-                set: { model.countdownDuration = $0 }
+                set: { model.setCountdownDuration($0) }
             ), in: 3...60) {
                 LabeledContent("Sleep delay") {
                     Text("\(model.countdownDuration) seconds")
