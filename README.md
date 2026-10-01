@@ -1,71 +1,83 @@
 # ClamDown
 
 <p align="center">
-  <img src="ClamDown/Assets.xcassets/AppIcon.appiconset/AppIcon-256.png" width="160" alt="ClamDown 앱 아이콘">
+  <img src="ClamDown/Assets.xcassets/AppIcon.appiconset/AppIcon-256.png" width="160" alt="ClamDown app icon">
 </p>
 
-ClamDown은 외부 모니터를 사용하는 MacBook의 덮개가 닫히면 잠자기 전 카운트다운을 표시하는 macOS 메뉴 막대 앱입니다. 카운트다운 중 아무 키나 누르거나 버튼을 선택하면 잠자기를 취소할 수 있습니다.
+ClamDown is a macOS menu bar app that shows a sleep countdown when you close the lid of a MacBook connected to an external display. Press any key or select **Cancel Sleep** during the countdown to keep your Mac awake.
 
-## 주요 기능
+## Features
 
-- MacBook 덮개 닫힘과 외부 디스플레이 연결 상태 감지
-- 전체화면 앱과 여러 Space 위에 카운트다운 표시
-- 5초에서 120초 사이의 잠자기 지연 시간 설정
-- 키보드 입력 또는 **Cancel Sleep** 버튼으로 잠자기 취소
-- **Sleep Now…** 버튼으로 즉시 카운트다운 시작
-- 모니터링 활성화 여부와 지연 시간 자동 저장
+- Detects MacBook lid closure and external display connections
+- Shows the countdown above full-screen apps and across Spaces
+- Provides a configurable sleep delay from 5 to 120 seconds
+- Cancels sleep with any keyboard input or the **Cancel Sleep** button
+- Starts a countdown on demand with **Sleep Now…**
+- Optionally launches automatically when you log in
+- Remembers monitoring, login, and delay preferences
 
-## 요구 사항
+## Requirements
 
-- macOS 14 이상
-- MacBook
-- 실제 덮개 감지 기능을 사용하려면 외부 디스플레이 연결 필요
+- macOS 14 or later
+- A MacBook
+- An external display for automatic lid-closure detection
 
-## 실행하기
+## Install and launch
 
-1. Xcode에서 `ClamDown.xcodeproj`를 엽니다.
-2. 상단 Scheme에서 **ClamDown**을 선택합니다.
-3. 실행 대상을 **My Mac**으로 선택합니다.
-4. `⌘R`을 누릅니다.
-5. macOS 메뉴 막대에 나타나는 조개 아이콘을 선택합니다.
+1. Download and unzip `ClamDown.app`.
+2. Move `ClamDown.app` to your **Applications** folder.
+3. Open ClamDown from **Applications**.
+4. Select the clam icon that appears in the macOS menu bar.
 
-앱이 이미 실행 중이라면 Xcode에서 먼저 정지한 후 다시 실행해야 아이콘이나 UI 변경 사항이 반영됩니다.
+ClamDown is a menu bar app, so it does not appear in the Dock. If macOS blocks the first launch, Control-click `ClamDown.app`, choose **Open**, and confirm that you want to open it.
 
-## 사용 방법
+## Usage
 
-### 자동으로 잠자기
+### Configure ClamDown
 
-1. 메뉴 막대의 조개 아이콘을 선택합니다.
-2. **Monitor lid closure**를 켭니다.
-3. **Sleep delay**를 5~120초 사이로 설정합니다.
-4. 외부 모니터가 연결된 상태에서 MacBook 덮개를 닫습니다.
-5. 외부 모니터에 카운트다운 창이 나타나고, 시간이 끝나면 Mac이 잠자기 모드로 들어갑니다.
+<p align="center">
+  <img src="docs/images/menu-bar-popover.png" width="420" alt="ClamDown menu bar controls">
+</p>
 
-### 잠자기 취소하기
+1. Select the clam icon in the menu bar.
+2. Turn on **Monitor lid closure**.
+3. Set **Sleep delay** to a value between 5 and 120 seconds.
+4. Optionally turn on **Launch at Login**.
 
-카운트다운 중 다음 중 하나를 수행합니다.
+### Start sleep automatically
 
-- 키보드에서 아무 키나 누릅니다.
-- 카운트다운 창의 **Cancel Sleep**을 선택합니다.
+With an external display connected, close the MacBook lid. ClamDown presents the countdown on the external display and puts the Mac to sleep when the timer reaches zero.
 
-### 수동으로 카운트다운 시작하기
+### Cancel sleep
 
-메뉴 막대 팝업에서 **Sleep Now…**를 선택하면 덮개를 닫지 않고도 현재 설정된 지연 시간으로 카운트다운을 시작할 수 있습니다.
+During the countdown, either press any key or select **Cancel Sleep**.
 
-### 모니터링 일시 중지하기
+<p align="center">
+  <img src="docs/images/countdown-panel.png" width="620" alt="ClamDown sleep countdown with a Cancel Sleep button">
+</p>
 
-**Monitor lid closure**를 끄면 덮개를 닫아도 자동 카운트다운이 시작되지 않습니다. 진행 중인 카운트다운이 있다면 함께 취소됩니다.
+### Start a countdown manually
 
-## 주의 사항
+Select **Sleep Now…** in the menu bar popover to start a countdown using the current delay without closing the lid. This is also a convenient way to test your settings.
 
-- 카운트다운이 끝나면 Mac이 실제로 잠자기 모드로 들어갑니다.
-- 덮개를 닫은 직후 디스플레이와 Space 구성이 바뀌기 때문에 팝업 위치가 잠시 조정될 수 있습니다.
-- 외부 디스플레이가 꺼지거나 연결이 해제되면 카운트다운 창을 확인하지 못할 수 있습니다.
+### Pause monitoring
 
-## 프로젝트 구성
+Turn off **Monitor lid closure** to prevent automatic countdowns. Doing so also cancels an active countdown.
 
-- `ClamDownModel.swift`: 앱 상태, 덮개 감지 및 카운트다운 관리
-- `SystemMonitor.swift`: 덮개, 외부 디스플레이, 키보드 및 시스템 잠자기 처리
-- `CountdownPanelController.swift`: 전체화면 Space 위에 표시되는 카운트다운 패널
-- `ContentView.swift`: 메뉴 막대 팝업과 카운트다운 UI
-- `MyApp.swift`: 앱 진입점과 메뉴 막대 구성
+## Important notes
+
+- When the countdown finishes, your Mac will actually go to sleep.
+- The panel may briefly reposition after lid closure while macOS updates the display and Space configuration.
+- You may not see the countdown if the external display turns off or disconnects.
+
+## Project structure
+
+- `ClamDownModel.swift`: App state, lid detection, preferences, and countdown management
+- `SystemMonitor.swift`: Lid, external display, keyboard, and system sleep integration
+- `CountdownPanelController.swift`: Countdown panel displayed above full-screen Spaces
+- `ContentView.swift`: Menu bar popover and countdown interface
+- `MyApp.swift`: App entry point and menu bar setup
+
+## License
+
+ClamDown is available under the [MIT License](LICENSE). You may use, modify, and distribute it subject to the license terms.

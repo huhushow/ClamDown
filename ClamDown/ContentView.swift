@@ -2,6 +2,8 @@ import AppKit
 import SwiftUI
 
 struct MenuBarContentView: View {
+    @Environment(\.openWindow) private var openWindow
+
     let model: ClamDownModel
 
     var body: some View {
@@ -69,6 +71,10 @@ struct MenuBarContentView: View {
 
             Divider()
 
+            Button("About ClamDown") {
+                openWindow(id: "about")
+            }
+
             Button("Quit Clam Down") {
                 NSApplication.shared.terminate(nil)
             }
@@ -78,6 +84,52 @@ struct MenuBarContentView: View {
         .onAppear {
             model.refreshLaunchAtLoginStatus()
         }
+    }
+}
+
+struct AboutView: View {
+    private let homepageURL = URL(string: "https://github.com/huhushow/ClamDown")
+    private let licenseURL = URL(string: "https://github.com/huhushow/ClamDown/blob/main/LICENSE")
+
+    var body: some View {
+        VStack(spacing: 14) {
+            Image(nsImage: NSApplication.shared.applicationIconImage)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 96, height: 96)
+
+            VStack(spacing: 4) {
+                Text("ClamDown")
+                    .font(.title2.weight(.semibold))
+                Text(versionDescription)
+                    .foregroundStyle(.secondary)
+            }
+
+            Text("Delays sleep when you close your MacBook while using an external display.")
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 16) {
+                if let homepageURL {
+                    Link("Homepage", destination: homepageURL)
+                }
+                if let licenseURL {
+                    Link("MIT License", destination: licenseURL)
+                }
+            }
+
+            Text("© 2026 Henry Park")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(28)
+        .frame(width: 380)
+    }
+
+    private var versionDescription: String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
+        return "Version \(version) (\(build))"
     }
 }
 

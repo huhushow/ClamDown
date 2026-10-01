@@ -9,5 +9,10 @@ struct MyApp: App {
             MenuBarContentView(model: model)
         }
         .menuBarExtraStyle(.window)
+
+        Window("About ClamDown", id: "about") {
+            AboutView()
+        }
+        .windowResizability(.contentSize)
     }
 }
