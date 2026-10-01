@@ -5,13 +5,9 @@ struct MyApp: App {
     @State private var model = ClamDownModel()
 
     var body: some Scene {
-        MenuBarExtra("Clam Down", systemImage: model.menuBarIconName) {
+        MenuBarExtra("Clam Down", image: "MenuBarIcon") {
             MenuBarContentView(model: model)
         }
         .menuBarExtraStyle(.window)
-
-        Settings {
-            SettingsView(model: model)
-        }
     }
 }

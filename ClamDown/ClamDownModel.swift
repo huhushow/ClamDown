@@ -25,10 +25,6 @@ final class ClamDownModel {
     private(set) var remainingSeconds = 0
     private(set) var errorMessage: LocalizedStringResource?
 
-    var menuBarIconName: String {
-        isCountdownActive ? "moon.zzz.fill" : "laptopcomputer"
-    }
-
     private let systemMonitor = SystemMonitor()
     private var panelController: CountdownPanelController?
     private var monitorTask: Task<Void, Never>?
@@ -46,7 +42,7 @@ final class ClamDownModel {
         }
 
         let storedDuration = defaults.integer(forKey: DefaultsKey.countdownDuration)
-        countdownDuration = storedDuration == 0 ? 10 : min(max(storedDuration, 3), 60)
+        countdownDuration = storedDuration == 0 ? 10 : min(max(storedDuration, 5), 120)
 
         if startsMonitoring {
             Task { @MainActor [weak self] in
@@ -63,7 +59,7 @@ final class ClamDownModel {
     }
 
     func setCountdownDuration(_ duration: Int) {
-        countdownDuration = min(max(duration, 3), 60)
+        countdownDuration = min(max(duration, 5), 120)
     }
 
     func cancelCountdown() {
